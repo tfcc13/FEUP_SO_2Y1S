@@ -1,0 +1,46 @@
+
+
+**CRIAR BIBLIOTECA ESTÁTICA**
+
+gcc -Wall -c complex_*.c // compila todos os ficheiros c começados com complex_c - * = wildcard
+
+ar -rc libcomplex.a complex_*.o // forma a biblioteca estatica chamada libcomplex.a
+
+/* -rc indica atualizar/criar biblioteca*/
+
+ar -t libcomplex.a // lista o nome dos objetos contidos na bibliotec
+
+nm libcomplex.a // lista as informações de simbololso presentes na biblioteca
+
+
+gcc -Wall use_complex.c -o use_complex -L. -lcomplex -lm
+
+/* compila o use_complex.c  
+-o - indica que o executavel deve se chamar use_complex
+-L. - diz ao linker onde procurar a biblioteca a utilizzar (. indica diretorio atual)
+ -lcomplex - é a bliblioteca a que se quer ligar o linker (l ja forma o lib)
+ -lm - indica a linkagem da biblioteca de matemática padrão "libm"
+
+
+**CRIAR BIBLIOTECA DINAMICA**
+
+gcc -c -Wall -fPIC complex_*.c // compila arquivos c iniciados por complex_
+
+// fPIC - Positional Independent Code, obriatorio na criacao de bibliotecas dina,icas
+
+$ gcc -shared -o libcomplex.so complex_*.o
+
+/* -shared - indica a criação de uma biblioteca compartilhada
+
+ -o libcomplex.so - indica o nome da biblioteca compartilhada
+ 
+ complex_*.o especifica os arquivos objetos usados para cria a bibliteca
+ */
+ 
+ 
+ gcc -Wall use_complex.c -o use_complex -L. -lcomplex -lm
+ 
+ Dependendo do sistema operativo, para a biblioteca ser encontradaa será necessárioo correr 
+ o seguinte código:
+
+$ export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
