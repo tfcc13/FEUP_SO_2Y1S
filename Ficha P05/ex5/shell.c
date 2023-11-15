@@ -13,6 +13,10 @@ char* command = fgets(buf, sizeof(buf), stdin);
 if(command == NULL)
 break;
 command[strlen(buf) - 1] = '\0';
+if (strcmp(command, "exit") == 0) {
+exit(EXIT_SUCCESS);
+}
+
 /* call fork and check return value */
 pid_t pid = fork();
 if(pid == -1) {
