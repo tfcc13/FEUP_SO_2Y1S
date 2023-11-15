@@ -1,0 +1,8 @@
+ls -a
+ls
+man string
+jhsdka
+sjlsjd
+
+mkdir teste
+ls
