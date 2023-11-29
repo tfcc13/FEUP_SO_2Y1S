@@ -6,3 +6,7 @@ sjlsjd
 
 mkdir teste
 ls
+ls
+ps
+pwd
+cat > teste1.txt
