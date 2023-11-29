@@ -9,8 +9,8 @@ int main(int argc, char* argv[]) {
 
 
     //See if it has an argument with the right name and writes a message if it doesnt
-    if(argc != 2) {
-        fprintf(stderr, "Missing: %s text.txt\n", argv[0]);
+    if(argc != 3) {
+        fprintf(stderr, "Missing: %s one of the text files\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 char buf[1024];
 
 //array of sockets 
-int sockets[2], retv;
+int sockets[3], retv;
 
 //creation of pair of sockets
 //AFUNIX local socket connection
@@ -52,7 +52,7 @@ if (retv > 0) { /* parent */
         exit(EXIT_FAILURE);
     }
 
-    int nchars = fread(buf,sizeof(char),1024,file);
+    int nchars = fread(buf,sizeof(char),sizeof(buf),file);
 
 
     //as a socket is bidirectional you can read or write
@@ -61,16 +61,16 @@ if (retv > 0) { /* parent */
     //read(sockets[0], buf, sizeof(buf));
 
     while( nchars > 0) {
+        printf("message from %d-->%s\n", getpid(), buf);
         write(sockets[0], buf, nchars);
         read(sockets[0], buf, nchars);
-        printf("message from %d-->%s\n", getpid(), buf);
-        nchars = fread(buf,sizeof(char),1024,file);
+        nchars = fread(buf,sizeof(char),sizeof(buf),file);
 
     }
     //write(sockets[0], string1, sizeof(string1));
     //read(sockets[0], buf, sizeof(buf));
 
-
+    fclose(file);
 
     //printf("message from %d-->%s\n", getpid(), buf);
     close(sockets[0]);
@@ -84,15 +84,34 @@ else { /* child */
 
 
 //another message to pass
-char string2[] = "...one receives far more than he seeks.";
+//char string2[] = "...one receives far more than he seeks.";
+
+int nchars;
 
 close(sockets[0]);
 
-read(sockets[1], buf, sizeof(buf));
+   FILE* file = fopen(argv[2],"r");
 
-printf("message from %d-->%s\n", getppid(), buf);
+    //se retornar null houve erro na abertura e faz print de uma mensagem
+        if(file == NULL) {            printf("error: could not open file");
+        exit(EXIT_FAILURE);
+    }
 
-write(sockets[1], string2, sizeof(string2));
+nchars =fread(buf,sizeof(char),sizeof(buf),file);
+
+while(nchars>0) {
+    printf("message from %d-->%s\n", getppid(), buf);
+    read(sockets[1], buf, sizeof(buf));
+    write(sockets[1], buf, sizeof(buf));    
+    nchars = fread(buf,sizeof(char),sizeof(buf),file);
+
+}
+
+
+
+//printf("message from %d-->%s\n", getppid(), buf);
+
+//write(sockets[1], string2, sizeof(string2));
 
 close(sockets[1]);
 exit(EXIT_SUCCESS);
