@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
 
     //See if it has an argument with the right name and writes a message if it doesnt
     if(argc != 3) {
-        fprintf(stderr, "Missing: %s one of the text files\n", argv[0]);
+        fprintf(stderr, "Missing: %s the text files\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
